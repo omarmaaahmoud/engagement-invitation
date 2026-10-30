@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     fps: 24,
     totalFrames: 121, // 1 to 121
     eventDate: new Date('2026-11-11T19:00:00+02:00'),
-    whatsappPhone: '201288967874', // Host WhatsApp number
+    whatsappPhone: '201210288768', // Host WhatsApp number
     groomName: 'سيف',
     brideName: 'حبيبة',
   };
@@ -592,21 +592,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       }
 
-      // Add to live Wishes Wall if message exists
+      // Add to live Wishes Wall in real-time
       if (message) {
-        const wishesContainer = document.getElementById('wishes-container');
-        const wishDiv = document.createElement('div');
-        wishDiv.className = 'wish-item';
-        wishDiv.innerHTML = `
-          <div class="wish-author">${name}</div>
-          <p class="wish-text">${message}</p>
-          <span class="wish-time">الآن</span>
-        `;
-        wishesContainer.prepend(wishDiv);
+        addWish(name, message);
       }
 
       // WhatsApp URL: official wa.me universal deep link
-      const phone = '201288967874';
+      const phone = '201210288768';
       const waUrl = `https://wa.me/${phone}?text=${encodeURIComponent(waText)}`;
 
       // Update the direct link button
@@ -671,6 +663,165 @@ document.addEventListener('DOMContentLoaded', () => {
 
     revealElements.forEach((el) => observer.observe(el));
   }
+
+  // ==========================================
+  // 12. LIVE REAL-TIME WISHES & BLESSINGS
+  // ==========================================
+  const WISHES_STORAGE_KEY = 'wedding_wishes_seif_habiba';
+  const wishesContainer = document.getElementById('wishes-container');
+  const wishesCountEl = document.getElementById('live-wishes-count');
+  const directWishForm = document.getElementById('direct-wish-form');
+  const syncChannel = window.BroadcastChannel ? new BroadcastChannel('wedding_wishes_sync') : null;
+
+  const defaultWishes = [
+    {
+      id: 'default-1',
+      author: 'عائلة العريس والعروس',
+      text: 'بارك الله لكما وبارك عليكما وجمع بينكما في خير وسعادة دائمة يا أحلى عرسان في الدنيا! 💍❤️',
+      timestamp: Date.now() - 1000 * 60 * 3
+    },
+    {
+      id: 'default-2',
+      author: 'الأصدقاء والأحباب',
+      text: 'ألف ألف مبروك للغالي سيف والجميلة حبيبة، جعل الله كل أيامكم فرح وهنا ومحبة لا تنتهي. 🌹✨',
+      timestamp: Date.now() - 1000 * 60 * 18
+    },
+    {
+      id: 'default-3',
+      author: 'م. كريم والأسرة',
+      text: 'ما شاء الله تبارك الرحمن، منورين وفرحتنا بيكم متتوصفش، ربنا يتمملكم على ألف خير يا رب! 🤍🎉',
+      timestamp: Date.now() - 1000 * 60 * 55
+    },
+    {
+      id: 'default-4',
+      author: 'شلة الصحاب الجدعان',
+      text: 'مبروك يا عريسنا سيف ومبروك يا أحلى عروسة حبيبة، جاهزين نولع الفرح ونفرح بيكم للصبح! 🔥💃',
+      timestamp: Date.now() - 1000 * 60 * 160
+    }
+  ];
+
+  function getStoredWishes() {
+    try {
+      const stored = localStorage.getItem(WISHES_STORAGE_KEY);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch (e) {}
+    return defaultWishes;
+  }
+
+  function saveWishes(wishes) {
+    try {
+      localStorage.setItem(WISHES_STORAGE_KEY, JSON.stringify(wishes));
+    } catch (e) {}
+  }
+
+  function formatRelativeArabicTime(timestamp) {
+    const now = Date.now();
+    const diffSec = Math.floor((now - timestamp) / 1000);
+    if (diffSec < 45) return 'الآن ✨';
+    const diffMin = Math.floor(diffSec / 60);
+    if (diffMin === 1) return 'منذ دقيقة';
+    if (diffMin === 2) return 'منذ دقيقتين';
+    if (diffMin < 11) return `منذ ${diffMin} دقائق`;
+    if (diffMin < 60) return `منذ ${diffMin} دقيقة`;
+    const diffHours = Math.floor(diffMin / 60);
+    if (diffHours === 1) return 'منذ ساعة';
+    if (diffHours === 2) return 'منذ ساعتين';
+    if (diffHours < 11) return `منذ ${diffHours} ساعات`;
+    if (diffHours < 24) return `منذ ${diffHours} ساعة`;
+    return 'اليوم';
+  }
+
+  function renderWishes(wishesList) {
+    if (!wishesContainer) return;
+    wishesContainer.innerHTML = '';
+    wishesList.forEach((wish) => {
+      const wishDiv = document.createElement('div');
+      wishDiv.className = 'wish-item';
+      wishDiv.setAttribute('data-timestamp', wish.timestamp);
+      wishDiv.innerHTML = `
+        <div class="wish-author">${wish.author}</div>
+        <p class="wish-text">${wish.text}</p>
+        <span class="wish-time">${formatRelativeArabicTime(wish.timestamp)}</span>
+      `;
+      wishesContainer.appendChild(wishDiv);
+    });
+    if (wishesCountEl) {
+      wishesCountEl.textContent = `دفتر التهاني مباشر الآن • ${wishesList.length} تهنئة ✨`;
+    }
+  }
+
+  function updateAllTimestamps() {
+    if (!wishesContainer) return;
+    const items = wishesContainer.querySelectorAll('.wish-item');
+    items.forEach((item) => {
+      const ts = parseInt(item.getAttribute('data-timestamp'), 10);
+      if (ts) {
+        const timeEl = item.querySelector('.wish-time');
+        if (timeEl) timeEl.textContent = formatRelativeArabicTime(ts);
+      }
+    });
+  }
+
+  function addWish(author, text) {
+    const newWish = {
+      id: 'wish-' + Date.now(),
+      author: author.trim(),
+      text: text.trim(),
+      timestamp: Date.now()
+    };
+    const current = getStoredWishes();
+    current.unshift(newWish);
+    saveWishes(current);
+    renderWishes(current);
+
+    const firstItem = wishesContainer.querySelector('.wish-item');
+    if (firstItem) firstItem.classList.add('just-added');
+
+    if (typeof confetti === 'function') {
+      confetti({
+        particleCount: 110,
+        spread: 75,
+        origin: { y: 0.7 },
+        colors: ['#dfb15b', '#ffffff', '#8e1c38', '#f3e3a9']
+      });
+    }
+
+    if (syncChannel) syncChannel.postMessage({ type: 'NEW_WISH', wish: newWish });
+  }
+
+  // Direct Wish Form Submission
+  if (directWishForm) {
+    directWishForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const nameInput = document.getElementById('direct-wish-name');
+      const textInput = document.getElementById('direct-wish-text');
+      if (nameInput.value.trim() && textInput.value.trim()) {
+        addWish(nameInput.value, textInput.value);
+        textInput.value = '';
+      }
+    });
+  }
+
+  // Cross-Tab Real-time Sync
+  if (syncChannel) {
+    syncChannel.onmessage = (event) => {
+      if (event.data && event.data.type === 'NEW_WISH') {
+        renderWishes(getStoredWishes());
+      }
+    };
+  }
+  window.addEventListener('storage', (e) => {
+    if (e.key === WISHES_STORAGE_KEY) {
+      renderWishes(getStoredWishes());
+    }
+  });
+
+  // Initial Render & Timer for Dynamic Timestamps
+  renderWishes(getStoredWishes());
+  setInterval(updateAllTimestamps, 20000);
 
   // ==========================================
   // INITIALIZE EXPERIENCE

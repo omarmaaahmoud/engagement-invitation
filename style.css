@@ -1251,8 +1251,137 @@ section {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  max-width: 540px;
+  max-width: 580px;
   margin: 0 auto;
+}
+
+/* Live Wish Input Form Card */
+.wish-form-card {
+  max-width: 580px;
+  margin: 0 auto 30px;
+  background: rgba(28, 5, 10, 0.85);
+  border: 1px solid rgba(223, 177, 91, 0.4);
+  border-radius: 22px;
+  padding: 24px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(223, 177, 91, 0.1);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  text-align: right;
+}
+
+.live-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 14px;
+  border-radius: 30px;
+  background: rgba(37, 211, 102, 0.12);
+  border: 1px solid rgba(37, 211, 102, 0.35);
+  color: #a3f7bf;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.live-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #25d366;
+  box-shadow: 0 0 8px #25d366;
+  animation: pulseDot 1.8s infinite;
+}
+
+@keyframes pulseDot {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.4); opacity: 0.5; }
+}
+
+.direct-wish-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.wish-input-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.wish-input-group .input-icon {
+  position: absolute;
+  right: 16px;
+  color: var(--color-gold-primary);
+  opacity: 0.75;
+  font-size: 0.95rem;
+  pointer-events: none;
+}
+
+.wish-input-group.textarea-group .input-icon {
+  top: 16px;
+}
+
+.wish-input,
+.wish-textarea {
+  width: 100%;
+  padding: 13px 44px 13px 16px;
+  background: rgba(14, 2, 4, 0.7);
+  border: 1px solid rgba(223, 177, 91, 0.3);
+  border-radius: 14px;
+  color: #ffffff;
+  font-family: var(--font-arabic-body);
+  font-size: 0.95rem;
+  outline: none;
+  transition: var(--transition-smooth);
+}
+
+.wish-textarea {
+  resize: vertical;
+  min-height: 70px;
+}
+
+.wish-input:focus,
+.wish-textarea:focus {
+  border-color: var(--color-gold-primary);
+  background: rgba(20, 3, 6, 0.9);
+  box-shadow: 0 0 15px rgba(223, 177, 91, 0.3);
+}
+
+.wish-send-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 13px 24px;
+  border-radius: 35px;
+  background: linear-gradient(135deg, var(--color-gold-primary) 0%, var(--color-gold-dark) 100%);
+  border: none;
+  color: #1a0408;
+  font-family: var(--font-arabic-heading);
+  font-size: 1.15rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(223, 177, 91, 0.3);
+  transition: var(--transition-smooth);
+  margin-top: 4px;
+  align-self: flex-start;
+}
+
+.wish-send-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(223, 177, 91, 0.5);
+  filter: brightness(1.1);
+}
+
+.wish-item.just-added {
+  animation: glowNewWish 1.5s ease-out;
+  border-color: var(--color-gold-primary);
+}
+
+@keyframes glowNewWish {
+  0% { transform: translateY(-10px) scale(0.98); box-shadow: 0 0 25px rgba(223, 177, 91, 0.6); }
+  100% { transform: translateY(0) scale(1); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4); }
 }
 
 .wish-item {
