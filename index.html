@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>دعوة خطوبة | سيف & حبيبة</title>
+  <meta name="description" content="يتشرف سيف وحبيبة بدعوتكم لمشاركتهم حفل خطوبتهم المباركة">
+  <meta name="theme-color" content="#180408">
+
+  <!-- Google Fonts: Luxury Serif & Arabic Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Amiri:ital,wght@0,400;0,700;1,400;1,700&family=Aref+Ruqaa:wght@400;700&family=Cinzel:wght@400;600;700;800;900&family=Marcellus&family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- GSAP CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <!-- Canvas Confetti for RSVP celebration -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+
+  <link rel="stylesheet" href="style.css?v=9">
+</head>
+<body>
+
+  <!-- ==============================================
+       AUDIO PLAYER (Plays on user interaction)
+       ============================================== -->
+  <audio id="bg-audio" preload="auto" loop>
+    <source src="assets/music.mp3?v=2" type="audio/mpeg">
+    <source src="assets/romantic_music.wav" type="audio/wav">
+  </audio>
+
+  <!-- Floating Audio Controller (Always visible after intro) -->
+  <div id="audio-toggle-btn" class="audio-toggle-btn hidden" aria-label="تشغيل / إيقاف الموسيقى">
+    <div class="sound-wave">
+      <span class="bar"></span>
+      <span class="bar"></span>
+      <span class="bar"></span>
+      <span class="bar"></span>
+    </div>
+    <i class="fa-solid fa-music music-icon"></i>
+  </div>
+
+  <!-- ==============================================
+       SCENE 1: CINEMATIC INTRO SCREEN & CANVAS
+       ============================================== -->
+  <div id="intro-screen" class="intro-screen">
+    <!-- Subtle Golden Sparkles & Dust Canvas Background -->
+    <canvas id="particles-canvas" class="particles-canvas"></canvas>
+
+    <!-- Main Canvas for Sequential Envelope Animation -->
+    <div class="canvas-container">
+      <canvas id="intro-canvas" class="intro-canvas"></canvas>
+    </div>
+
+    <!-- Intro UI Overlay (Centered at bottom/middle) -->
+    <div id="intro-ui" class="intro-ui">
+      <!-- Loading Indicator while frames preload -->
+      <div id="intro-loader" class="intro-loader">
+        <div class="loader-monogram">س & ح</div>
+        <div class="loader-spinner">
+          <div class="spinner-ring"></div>
+        </div>
+        <p class="loader-text" id="loader-status">جاري تجهيز الدعوة الملكية...</p>
+        <div class="progress-bar-container">
+          <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        <span class="progress-percent" id="progress-percent">0%</span>
+      </div>
+
+      <!-- Luxury Open Button (Appears when 100% preloaded) -->
+      <div id="intro-action" class="intro-action hidden">
+        <button id="open-invitation-btn" class="luxury-open-btn" aria-label="Open Our Invitation">
+          <span class="btn-glow-ring"></span>
+          <span class="btn-shine"></span>
+          <span class="btn-icon"><i class="fa-solid fa-envelope-open-text"></i></span>
+          <span class="btn-text-ar">اضغط لفتح الدعوة</span>
+          <span class="btn-text-en">OPEN OUR INVITATION</span>
+        </button>
+        <p class="intro-hint">يرجى تشغيل الصوت لتجربة سينمائية مميزة ✨</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cinematic Flash Transition Overlay -->
+  <div id="cinematic-flash" class="cinematic-flash"></div>
+
+  <!-- ==============================================
+       SCENE 2: MAIN ENGAGEMENT INVITATION
+       ============================================== -->
+  <main id="main-invitation" class="main-invitation">
+    
+    <!-- Floating Petals Canvas -->
+    <canvas id="petals-canvas" class="petals-canvas"></canvas>
+
+    <!-- Top Sticky Header Navigation -->
+    <header class="invitation-header">
+      <a href="#event-details-section" class="details-nav-btn">
+        <i class="fa-solid fa-angle-down"></i>
+        <span>تفاصيل الدعوة</span>
+      </a>
+      <div class="header-monogram">
+        <div class="diamond-frame">
+          <span>س</span>
+          <span class="divider">|</span>
+          <span>ح</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- HERO SECTION: Grand Archway & Calligraphy -->
+    <section class="hero-section" id="hero-section">
+      <div class="hero-bg-wrapper">
+        <img src="assets/palace_arch_bg.jpg" alt="قصر الاحتفال" class="hero-bg-img" id="hero-bg-img">
+        <div class="hero-overlay"></div>
+      </div>
+
+      <div class="hero-content">
+        <!-- Monogram Badge -->
+        <div class="monogram-badge">
+          <div class="monogram-diamond">
+            <span class="m-letter">س</span>
+            <span class="m-sep">|</span>
+            <span class="m-letter">ح</span>
+          </div>
+        </div>
+
+        <!-- English Subtitle -->
+        <h2 class="hero-sub-title">THE ENGAGEMENT INVITATION</h2>
+
+        <!-- Basmalah -->
+        <div class="basmalah-text">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+
+        <!-- Couple Names -->
+        <div class="names-wrapper">
+          <h1 class="groom-name">سيف</h1>
+          <span class="ampersand-sign">&</span>
+          <h1 class="bride-name">حبيبة</h1>
+        </div>
+
+        <!-- Invitation Verse -->
+        <p class="invitation-verse">
+          بقلوبٍ يملؤها الفرح، ندعوكم لمشاركتنا بداية حكاية جديدة في ليلة تجمع العائلة والحبايب.
+        </p>
+
+        <!-- Date & Time Pills -->
+        <div class="date-time-badges">
+          <div class="info-pill date-pill">
+            <i class="fa-regular fa-calendar-check"></i>
+            <span>الأربعاء، 11 نوفمبر 2026</span>
+          </div>
+          <div class="info-pill time-pill">
+            <i class="fa-regular fa-clock"></i>
+            <span>السابعة مساءً</span>
+          </div>
+        </div>
+
+        <!-- Scroll Indicator -->
+        <a href="#engaged-day-section" class="scroll-indicator">
+          <span class="scroll-text">SCROLL TO OPEN</span>
+          <i class="fa-solid fa-chevron-down scroll-arrow"></i>
+        </a>
+      </div>
+    </section>
+
+    <!-- SECTION 2: ENGAGED DAY & COUPLE CARD -->
+    <section class="engaged-day-section" id="engaged-day-section">
+      <div class="section-container">
+        <h3 class="section-tag reveal-on-scroll">ENGAGED DAY</h3>
+        <h2 class="section-title reveal-on-scroll">فرحتنا تكتمل بوجودكم</h2>
+
+        <!-- Luxury Photo Card with Polaroid & Envelope Bouquet -->
+        <div class="couple-card-container reveal-on-scroll">
+          <div class="couple-card-glow"></div>
+          <img src="assets/couple_envelope_card.png?v=4" alt="سيف وحبيبة" class="couple-card-img">
+        </div>
+
+        <!-- Poetic Love Quote -->
+        <div class="love-quote-box reveal-on-scroll">
+          <i class="fa-solid fa-quote-right quote-icon"></i>
+          <p class="quote-verse">
+            "وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَاجًا لِّتَسْكُنُوا إِلَيْهَا وَجَعَلَ بَيْنَكُم مَّوَدَّةً وَرَحْمَةً"
+          </p>
+          <span class="quote-sub">صدق الله العظيم</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 3: COUNTDOWN TIMER -->
+    <section class="countdown-section" id="countdown-section">
+      <div class="section-container reveal-on-scroll">
+        <div class="countdown-header">
+          <i class="fa-regular fa-hourglass-half countdown-icon"></i>
+          <h3>العد التنازلي لليلتنا المميزة</h3>
+          <p>نعد الثواني بشوق لنلتقي بكم</p>
+        </div>
+
+        <div class="timer-grid">
+          <div class="timer-card">
+            <span class="timer-num" id="days-count">00</span>
+            <span class="timer-label">يوم</span>
+          </div>
+          <div class="timer-card">
+            <span class="timer-num" id="hours-count">00</span>
+            <span class="timer-label">ساعة</span>
+          </div>
+          <div class="timer-card">
+            <span class="timer-num" id="minutes-count">00</span>
+            <span class="timer-label">دقيقة</span>
+          </div>
+          <div class="timer-card">
+            <span class="timer-num" id="seconds-count">00</span>
+            <span class="timer-label">ثانية</span>
+          </div>
+        </div>
+
+        <!-- Add to Calendar Button -->
+        <div class="calendar-btn-wrapper">
+          <button id="add-to-calendar-btn" class="luxury-secondary-btn">
+            <i class="fa-solid fa-calendar-plus"></i>
+            <span>إضافة إلى التقويم</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 4: EVENT DETAILS & LOCATION -->
+    <section class="event-details-section" id="event-details-section">
+      <div class="section-container">
+        <h3 class="section-tag reveal-on-scroll">EVENT LOCATION</h3>
+        <h2 class="section-title reveal-on-scroll">تفاصيل وموقع الحفل</h2>
+
+        <div class="details-cards-grid">
+          <!-- Card 1: Time & Date -->
+          <div class="detail-card reveal-on-scroll delay-1">
+            <div class="card-icon-wrap">
+              <i class="fa-regular fa-calendar-days"></i>
+            </div>
+            <h4>الموعد والتاريخ</h4>
+            <p class="highlight-info">الأربعاء، 11 نوفمبر 2026</p>
+            <p class="sub-info">في تمام الساعة 7:00 مساءً وحتى 11:30 مساءً</p>
+          </div>
+
+          <!-- Card 2: Venue -->
+          <div class="detail-card reveal-on-scroll delay-2">
+            <div class="card-icon-wrap">
+              <i class="fa-solid fa-champagne-glasses"></i>
+            </div>
+            <h4>قاعة الحفل</h4>
+            <p class="highlight-info">قاعة كريستال</p>
+            <p class="sub-info">الرأس السوداء - الإسكندرية</p>
+            <a href="https://share.google/9qYcJTclBOH2EPpEZ" target="_blank" rel="noopener noreferrer" class="map-link-btn">
+              <i class="fa-solid fa-location-dot"></i>
+              <span>عرض الموقع على خرائط Google</span>
+            </a>
+          </div>
+
+          <!-- Card 3: Dress Code -->
+          <div class="detail-card reveal-on-scroll delay-3">
+            <div class="card-icon-wrap">
+              <i class="fa-solid fa-wand-magic-sparkles"></i>
+            </div>
+            <h4>إطلالة الحفل</h4>
+            <p class="highlight-info">Formal & Elegant</p>
+            <p class="sub-info">ألوان مقترحة: Burgundy & Warm Champagne</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 5: RSVP / ATTENDANCE CONFIRMATION -->
+    <section class="rsvp-section" id="rsvp-section">
+      <div class="section-container">
+        <div class="rsvp-card reveal-on-scroll">
+          <div class="rsvp-header">
+            <div class="seal-icon">
+              <i class="fa-solid fa-envelope"></i>
+            </div>
+            <h3 class="section-tag">RSVP</h3>
+            <h2 class="section-title">تأكيد الحضور</h2>
+            <p class="rsvp-desc">يسعدنا ويشرفنا تأكيد حضوركم لمشاركتنا فرحتنا الكبرى</p>
+          </div>
+
+          <form id="rsvp-form" class="rsvp-form">
+            <div class="form-group">
+              <label for="guest-name">الاسم الكريم</label>
+              <div class="input-wrap">
+                <i class="fa-solid fa-user"></i>
+                <input type="text" id="guest-name" required placeholder="أدخل اسمك الكريم">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>حالة الحضور</label>
+              <div class="radio-options">
+                <label class="radio-card selected">
+                  <input type="radio" name="attendance" value="attending" checked>
+                  <span class="radio-custom"></span>
+                  <span class="radio-text">بكل سرور سأحضر ✨</span>
+                </label>
+                <label class="radio-card">
+                  <input type="radio" name="attendance" value="declined">
+                  <span class="radio-custom"></span>
+                  <span class="radio-text">أعتذر لظروف خاصة 🤍</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="form-group" id="guests-count-group">
+              <label for="guests-count">عدد المرافقين</label>
+              <div class="input-wrap">
+                <i class="fa-solid fa-users"></i>
+                <select id="guests-count">
+                  <option value="1">شخص واحد (أنا فقط)</option>
+                  <option value="2">شخصين</option>
+                  <option value="3">3 أشخاص</option>
+                  <option value="4">4 أشخاص</option>
+                  <option value="5+">5 أشخاص أو أكثر</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="guest-message">كلمة طيبة للعروسين (اختياري)</label>
+              <div class="input-wrap textarea-wrap">
+                <textarea id="guest-message" rows="3" placeholder="اكتب تهنئتك القلبية لسيف وحبيبة..."></textarea>
+              </div>
+            </div>
+
+            <button type="submit" class="rsvp-submit-btn">
+              <i class="fa-brands fa-whatsapp"></i>
+              <span>تأكيد الحضور عبر واتساب</span>
+            </button>
+          </form>
+
+          <!-- Success Alert Message -->
+          <div id="rsvp-success" class="rsvp-success hidden">
+            <i class="fa-solid fa-circle-check"></i>
+            <h4>تم تجهيز تأكيد الحضور!</h4>
+            <p>جاري فتح محادثة واتساب الآن لإرسال التأكيد...</p>
+            <a id="rsvp-whatsapp-direct-link" href="#" target="_blank" class="direct-wa-btn">
+              <i class="fa-brands fa-whatsapp"></i>
+              <span>اضغط هنا لفتح واتساب مباشرة</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 6: WISHES WALL (LIVE INTERACTIVE GUESTBOOK) -->
+    <section class="wishes-section" id="wishes-section">
+      <div class="section-container">
+        <h3 class="section-tag reveal-on-scroll">WISHES & BLESSINGS</h3>
+        <h2 class="section-title reveal-on-scroll">دفتر التهاني والمباركات</h2>
+        <p class="section-subtitle reveal-on-scroll">كلماتكم الطيبة تزيد فرحتنا نوراً وسعادة</p>
+
+        <div class="wishes-container" id="wishes-container">
+          <!-- Dynamic wishes will be prepended here -->
+          <div class="wish-item reveal-on-scroll delay-1">
+            <div class="wish-author">عائلة العريس والعروس</div>
+            <p class="wish-text">بارك الله لكما وبارك عليكما وجمع بينكما في خير وسعادة دائمة يا أحلى عرسان في الدنيا! 💍❤️</p>
+            <span class="wish-time">الآن</span>
+          </div>
+          <div class="wish-item reveal-on-scroll delay-2">
+            <div class="wish-author">الأصدقاء والأحباب</div>
+            <p class="wish-text">ألف ألف مبروك للغالي سيف والجميلة حبيبة، جعل الله كل أيامكم فرح وهنا ومحبة لا تنتهي. 🌹✨</p>
+            <span class="wish-time">منذ قليل</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="invitation-footer">
+      <div class="footer-monogram">
+        <div class="diamond-frame">
+          <span>س</span>
+          <span class="divider">&</span>
+          <span>ح</span>
+        </div>
+      </div>
+      <p class="footer-verse">دامت دياركم عامرة بالأفراح والمسرات 🤍</p>
+      <p class="footer-names">سيف & حبيبة — 11 نوفمبر 2026</p>
+      <div class="footer-share">
+        <button id="share-invitation-btn" class="share-btn">
+          <i class="fa-solid fa-share-nodes"></i>
+          <span>مشاركة رابط الدعوة</span>
+        </button>
+      </div>
+    </footer>
+
+  </main>
+
+  <script src="app.js?v=12"></script>
+</body>
+</html>
