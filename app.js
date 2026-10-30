@@ -687,16 +687,10 @@ document.addEventListener('DOMContentLoaded', () => {
       timestamp: Date.now() - 1000 * 60 * 18
     },
     {
-      id: 'default-3',
-      author: 'م. كريم والأسرة',
-      text: 'ما شاء الله تبارك الرحمن، منورين وفرحتنا بيكم متتوصفش، ربنا يتمملكم على ألف خير يا رب! 🤍🎉',
-      timestamp: Date.now() - 1000 * 60 * 55
-    },
-    {
       id: 'default-4',
       author: 'شلة الصحاب الجدعان',
       text: 'مبروك يا عريسنا سيف ومبروك يا أحلى عروسة حبيبة، جاهزين نولع الفرح ونفرح بيكم للصبح! 🔥💃',
-      timestamp: Date.now() - 1000 * 60 * 160
+      timestamp: Date.now() - 1000 * 60 * 60
     }
   ];
 
@@ -705,7 +699,10 @@ document.addEventListener('DOMContentLoaded', () => {
       const stored = localStorage.getItem(WISHES_STORAGE_KEY);
       if (stored) {
         const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          // Filter out any previous default-3 entry
+          return parsed.filter(w => w.id !== 'default-3' && w.author !== 'م. كريم والأسرة');
+        }
       }
     } catch (e) {}
     return defaultWishes;
